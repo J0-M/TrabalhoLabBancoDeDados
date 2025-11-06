@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/alunos/a2482150/Área de trabalho/TrabalhoLabBancoDeDados/LabBancoDeDados/LabBancoDeDados.csproj": {}
+    "C:\\Users\\Pichau\\Desktop\\TrabalhoLabBancoDeDados\\LabBancoDeDados\\LabBancoDeDados.csproj": {}
   },
   "projects": {
-    "/home/alunos/a2482150/Área de trabalho/TrabalhoLabBancoDeDados/LabBancoDeDados/LabBancoDeDados.csproj": {
+    "C:\\Users\\Pichau\\Desktop\\TrabalhoLabBancoDeDados\\LabBancoDeDados\\LabBancoDeDados.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/alunos/a2482150/Área de trabalho/TrabalhoLabBancoDeDados/LabBancoDeDados/LabBancoDeDados.csproj",
+        "projectUniqueName": "C:\\Users\\Pichau\\Desktop\\TrabalhoLabBancoDeDados\\LabBancoDeDados\\LabBancoDeDados.csproj",
         "projectName": "LabBancoDeDados",
-        "projectPath": "/home/alunos/a2482150/Área de trabalho/TrabalhoLabBancoDeDados/LabBancoDeDados/LabBancoDeDados.csproj",
-        "packagesPath": "/home/alunos/a2482150/.nuget/packages/",
-        "outputPath": "/home/alunos/a2482150/Área de trabalho/TrabalhoLabBancoDeDados/LabBancoDeDados/obj/",
+        "projectPath": "C:\\Users\\Pichau\\Desktop\\TrabalhoLabBancoDeDados\\LabBancoDeDados\\LabBancoDeDados.csproj",
+        "packagesPath": "C:\\Users\\Pichau\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Pichau\\Desktop\\TrabalhoLabBancoDeDados\\LabBancoDeDados\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/alunos/a2482150/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Pichau\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,23 +38,47 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.1, )"
             },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.10, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
               "version": "[9.0.4, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.6, )"
             }
           },
           "imports": [
@@ -76,7 +100,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
