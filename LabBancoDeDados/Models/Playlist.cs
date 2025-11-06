@@ -22,6 +22,6 @@ namespace LabBancoDeDados.Models
 
         public Usuario Usuario { get; set; }
 
-        public ICollection<MusicaPlaylist>? MusicaPlaylists { get; set; } //N:N
+        public ICollection<MusicaPlaylist>? MusicaPlaylists { get; set; } = new List<MusicaPlaylist>(); //N:N
     }
 }

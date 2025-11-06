@@ -21,22 +21,21 @@ namespace LabBancoDeDados.Controllers
         {
             return await _context.Playlists
                 .Include(p => p.Usuario)
-                .Include(p => p.Musicas)
+                .Include(p => p.MusicaPlaylists)
                 .ThenInclude(mp => mp.Musica)
                 .ToListAsync();
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Playlist>> GetPlaylist(int id)
+        [HttpGet("{playlistId:int}/{usuarioId:int}")]
+        public async Task<ActionResult<Playlist>> GetPlaylist(int playlistId, int usuarioId)
         {
             var playlist = await _context.Playlists
                 .Include(p => p.Usuario)
-                .Include(p => p.Musicas)
-                .ThenInclude(mp => mp.Musica)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .Include(p => p.MusicaPlaylists)
+                    .ThenInclude(mp => mp.Musica)
+                .FirstOrDefaultAsync(p => p.PlaylistId == playlistId && p.UsuarioId == usuarioId);
 
-            if (playlist == null)
-                return NotFound();
+            if (playlist == null) return NotFound();
 
             return playlist;
         }
@@ -44,34 +43,42 @@ namespace LabBancoDeDados.Controllers
         [HttpPost]
         public async Task<ActionResult<Playlist>> PostPlaylist(Playlist playlist)
         {
+            var usuarioExists = await _context.Usuarios.AnyAsync(u => u.Id == playlist.UsuarioId);
+            if (!usuarioExists) return BadRequest("Usuário inválido.");
+
             _context.Playlists.Add(playlist);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPlaylist), new { id = playlist.Id }, playlist);
+            return CreatedAtAction(nameof(GetPlaylist), new { playlistId = playlist.PlaylistId, usuarioId = playlist.UsuarioId }, playlist);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutPlaylist(int id, Playlist playlist)
+        [HttpPut("{playlistId:int}/{usuarioId:int}")]
+        public async Task<IActionResult> PutPlaylist(int playlistId, int usuarioId, Playlist updated)
         {
-            if (id != playlist.Id)
-                return BadRequest();
+            if (playlistId != updated.PlaylistId || usuarioId != updated.UsuarioId)
+                return BadRequest("Chave composta divergente.");
 
-            _context.Entry(playlist).State = EntityState.Modified;
+            var playlist = await _context.Playlists
+                .FirstOrDefaultAsync(p => p.PlaylistId == playlistId && p.UsuarioId == usuarioId);
+
+            if (playlist == null) return NotFound();
+
+            playlist.Nome = updated.Nome;
+
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePlaylist(int id)
+        [HttpDelete("{playlistId:int}/{usuarioId:int}")]
+        public async Task<IActionResult> DeletePlaylist(int playlistId, int usuarioId)
         {
-            var playlist = await _context.Playlists.FindAsync(id);
-            if (playlist == null)
-                return NotFound();
+            var playlist = await _context.Playlists
+                .FirstOrDefaultAsync(p => p.PlaylistId == playlistId && p.UsuarioId == usuarioId);
+
+            if (playlist == null) return NotFound();
 
             _context.Playlists.Remove(playlist);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }
