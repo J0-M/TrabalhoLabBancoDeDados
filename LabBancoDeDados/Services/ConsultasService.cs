@@ -46,15 +46,23 @@ namespace LabBancoDeDados.Services
 
         public async Task<List<ContagemMusicasPlaylistDTO>> GetContagemMusicasPorPlaylist()
         {
-            return await _context.Playlists
-                .Select(p => new ContagemMusicasPlaylistDTO
-                (
+            var resultados = await _context.Playlists
+                .Select(p => new
+                {
                     p.Nome,
-                    p.MusicaPlaylists.Count,
-                    p.Usuario.Username
-                ))
-                .OrderByDescending(p => p.QuantidadeMusicas)
+                    QuantidadeMusicas = p.MusicaPlaylists!.Count,
+                    Username = p.Usuario!.Username
+                })
+                .OrderByDescending(x => x.QuantidadeMusicas)
                 .ToListAsync();
+
+            return resultados
+                .Select(x => new ContagemMusicasPlaylistDTO(
+                    x.Nome,
+                    x.QuantidadeMusicas,
+                    x.Username
+                ))
+                .ToList();
         }
 
         public async Task<List<ArtistaSemMusicasDTO>> GetArtistasSemMusicasEmPlaylists()
@@ -89,25 +97,28 @@ namespace LabBancoDeDados.Services
 
         public async Task<List<TempoTotalPlaylistDTO>> GetTempoTotalReproducaoPlaylists()
         {
-            var resultados = await _context.Playlists
-            .Select(p => new 
-            {
-                p.Nome,
-                Username = p.Usuario!.Username,
-                TempoTotalSegundos = p.MusicaPlaylists != null 
-                    ? p.MusicaPlaylists.Sum(mp => mp.Musica!.DuracaoSegundos) 
-                    : 0
-            })
-            .OrderByDescending(x => x.TempoTotalSegundos)
-            .ToListAsync();
+            var playlists = await _context.Playlists
+                .Include(p => p.Usuario)
+                .ToListAsync();
 
-            return resultados
-            .Select(x => new TempoTotalPlaylistDTO(
-                x.Nome,
-                x.Username,
-                x.TempoTotalSegundos
-            ))
-            .ToList();
+            var resultado = new List<TempoTotalPlaylistDTO>();
+
+            foreach (var playlist in playlists)
+            {
+                // Para cada playlist, calcule o tempo total
+                var tempoTotal = await _context.MusicaPlaylists
+                    .Where(mp => mp.PlaylistId == playlist.PlaylistId && mp.UsuarioId == playlist.UsuarioId)
+                    .Select(mp => mp.Musica!.DuracaoSegundos)
+                    .SumAsync();
+
+                resultado.Add(new TempoTotalPlaylistDTO(
+                    playlist.Nome,
+                    playlist.Usuario!.Username,
+                    tempoTotal
+                ));
+        }
+
+    return resultado.OrderByDescending(r => r.TempoTotalSegundos).ToList();
         }
 
         public async Task<List<MusicaMaisCurtaQueMediaDTO>> GetMusicasMaisCurtaQueMediaArtista()
