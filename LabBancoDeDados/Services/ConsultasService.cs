@@ -104,8 +104,7 @@ namespace LabBancoDeDados.Services
             var resultado = new List<TempoTotalPlaylistDTO>();
 
             foreach (var playlist in playlists)
-            {
-                // Para cada playlist, calcule o tempo total
+            {   
                 var tempoTotal = await _context.MusicaPlaylists
                     .Where(mp => mp.PlaylistId == playlist.PlaylistId && mp.UsuarioId == playlist.UsuarioId)
                     .Select(mp => mp.Musica!.DuracaoSegundos)
@@ -116,9 +115,9 @@ namespace LabBancoDeDados.Services
                     playlist.Usuario!.Username,
                     tempoTotal
                 ));
-        }
+            }
 
-    return resultado.OrderByDescending(r => r.TempoTotalSegundos).ToList();
+            return resultado.OrderByDescending(r => r.TempoTotalSegundos).ToList();
         }
 
         public async Task<List<MusicaMaisCurtaQueMediaDTO>> GetMusicasMaisCurtaQueMediaArtista()
