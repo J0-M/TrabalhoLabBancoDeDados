@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabBancoDeDados.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251106043525_Inicial")]
-    partial class Inicial
+    [Migration("20251204030612_INITIAL")]
+    partial class INITIAL
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,6 +45,32 @@ namespace LabBancoDeDados.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ARTISTA");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Nacionalidade = "Britânica",
+                            Nome = "Queen"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Nacionalidade = "Britânica",
+                            Nome = "Led Zeppelin"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Nacionalidade = "Australiana",
+                            Nome = "AC/DC"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Nacionalidade = "Brasileira",
+                            Nome = "Banda X (Pop)"
+                        });
                 });
 
             modelBuilder.Entity("LabBancoDeDados.Models.Musica", b =>
@@ -71,6 +97,50 @@ namespace LabBancoDeDados.Migrations
                     b.HasIndex("ArtistaId");
 
                     b.ToTable("MUSICA");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArtistaId = 1,
+                            DuracaoSegundos = 354,
+                            Titulo = "Bohemian Rhapsody"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArtistaId = 2,
+                            DuracaoSegundos = 482,
+                            Titulo = "Stairway to Heaven"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ArtistaId = 3,
+                            DuracaoSegundos = 255,
+                            Titulo = "Back In Black"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ArtistaId = 1,
+                            DuracaoSegundos = 160,
+                            Titulo = "We Will Rock You"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ArtistaId = 4,
+                            DuracaoSegundos = 180,
+                            Titulo = "Musica Pop Brasileira"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ArtistaId = 3,
+                            DuracaoSegundos = 292,
+                            Titulo = "Thunderstruck"
+                        });
                 });
 
             modelBuilder.Entity("LabBancoDeDados.Models.MusicaPlaylist", b =>
@@ -95,6 +165,50 @@ namespace LabBancoDeDados.Migrations
                     b.HasIndex("PlaylistId", "UsuarioId");
 
                     b.ToTable("MUSICA_PLAYLIST");
+
+                    b.HasData(
+                        new
+                        {
+                            MusicaId = 1,
+                            PlaylistId = 1,
+                            UsuarioId = 1,
+                            OrdemNaPlaylist = 1
+                        },
+                        new
+                        {
+                            MusicaId = 3,
+                            PlaylistId = 1,
+                            UsuarioId = 1,
+                            OrdemNaPlaylist = 2
+                        },
+                        new
+                        {
+                            MusicaId = 4,
+                            PlaylistId = 1,
+                            UsuarioId = 1,
+                            OrdemNaPlaylist = 3
+                        },
+                        new
+                        {
+                            MusicaId = 2,
+                            PlaylistId = 2,
+                            UsuarioId = 2,
+                            OrdemNaPlaylist = 1
+                        },
+                        new
+                        {
+                            MusicaId = 3,
+                            PlaylistId = 3,
+                            UsuarioId = 1,
+                            OrdemNaPlaylist = 1
+                        },
+                        new
+                        {
+                            MusicaId = 6,
+                            PlaylistId = 3,
+                            UsuarioId = 1,
+                            OrdemNaPlaylist = 2
+                        });
                 });
 
             modelBuilder.Entity("LabBancoDeDados.Models.Playlist", b =>
@@ -108,8 +222,10 @@ namespace LabBancoDeDados.Migrations
                         .HasColumnOrder(1);
 
                     b.Property<DateTime>("DataCriacao")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("data_criacao");
+                        .HasColumnName("data_criacao")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Nome")
                         .IsRequired()
@@ -121,6 +237,29 @@ namespace LabBancoDeDados.Migrations
                     b.HasIndex("UsuarioId");
 
                     b.ToTable("PLAYLIST");
+
+                    b.HasData(
+                        new
+                        {
+                            PlaylistId = 1,
+                            UsuarioId = 1,
+                            DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Rock do Pablo"
+                        },
+                        new
+                        {
+                            PlaylistId = 2,
+                            UsuarioId = 2,
+                            DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Baladas do Josue"
+                        },
+                        new
+                        {
+                            PlaylistId = 3,
+                            UsuarioId = 1,
+                            DataCriacao = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Nome = "Heavy Riffs"
+                        });
                 });
 
             modelBuilder.Entity("LabBancoDeDados.Models.Usuario", b =>
@@ -144,6 +283,26 @@ namespace LabBancoDeDados.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("USUARIO");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "pablo@aluno.com",
+                            Username = "Pablo"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "josue@aluno.com",
+                            Username = "Josue"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Email = "alexandre@aluno.com",
+                            Username = "Alexandre"
+                        });
                 });
 
             modelBuilder.Entity("LabBancoDeDados.Models.Musica", b =>

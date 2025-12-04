@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace LabBancoDeDados.Migrations
 {
     /// <inheritdoc />
-    public partial class Inicial : Migration
+    public partial class INITIAL : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,7 +70,7 @@ namespace LabBancoDeDados.Migrations
                     PlaylistId = table.Column<int>(type: "integer", nullable: false),
                     UsuarioId = table.Column<int>(type: "integer", nullable: false),
                     Nome = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    data_criacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    data_criacao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -105,6 +107,63 @@ namespace LabBancoDeDados.Migrations
                         principalTable: "PLAYLIST",
                         principalColumns: new[] { "PlaylistId", "UsuarioId" },
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "ARTISTA",
+                columns: new[] { "Id", "Nacionalidade", "Nome" },
+                values: new object[,]
+                {
+                    { 1, "Britânica", "Queen" },
+                    { 2, "Britânica", "Led Zeppelin" },
+                    { 3, "Australiana", "AC/DC" },
+                    { 4, "Brasileira", "Banda X (Pop)" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "USUARIO",
+                columns: new[] { "Id", "Email", "Username" },
+                values: new object[,]
+                {
+                    { 1, "pablo@aluno.com", "Pablo" },
+                    { 2, "josue@aluno.com", "Josue" },
+                    { 3, "alexandre@aluno.com", "Alexandre" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MUSICA",
+                columns: new[] { "Id", "ArtistaId", "DuracaoSegundos", "Titulo" },
+                values: new object[,]
+                {
+                    { 1, 1, 354, "Bohemian Rhapsody" },
+                    { 2, 2, 482, "Stairway to Heaven" },
+                    { 3, 3, 255, "Back In Black" },
+                    { 4, 1, 160, "We Will Rock You" },
+                    { 5, 4, 180, "Musica Pop Brasileira" },
+                    { 6, 3, 292, "Thunderstruck" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "PLAYLIST",
+                columns: new[] { "PlaylistId", "UsuarioId", "data_criacao", "Nome" },
+                values: new object[,]
+                {
+                    { 1, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Rock do Pablo" },
+                    { 2, 2, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Baladas do Josue" },
+                    { 3, 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Heavy Riffs" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "MUSICA_PLAYLIST",
+                columns: new[] { "MusicaId", "PlaylistId", "UsuarioId", "OrdemNaPlaylist" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1 },
+                    { 2, 2, 2, 1 },
+                    { 3, 1, 1, 2 },
+                    { 3, 3, 1, 1 },
+                    { 4, 1, 1, 3 },
+                    { 6, 3, 1, 2 }
                 });
 
             migrationBuilder.CreateIndex(
