@@ -12,7 +12,8 @@ namespace LabBancoDeDados.Services
         {
             _context = context;
         }
-
+        //Playlists de um Usuário Específico usando o username como filtro (ex: 'Pablo')
+        //O retorno deve incluir o nome da Playlist e a data de criação
         public async Task<List<PlaylistUsuarioDTO>> GetPlaylistsPorUsername(string username)
         {
             return await _context.Playlists
@@ -27,7 +28,8 @@ namespace LabBancoDeDados.Services
                 ))
                 .ToListAsync();
         }
-
+        //Encontre todas as Músicas que pertencem a qualquer Playlist criada por um USUARIO específico (ex: 'Josue'), e cujo ARTISTA seja 'Queen'
+        //Esta consulta requer atravessar múltiplos relacionamentos e aplicar filtros em diferentes entidades.
         public async Task<List<MusicaPlaylistUsuarioDTO>> GetMusicasEmPlaylistsDeUsuarioPorArtista(
             string username, string artistaNome)
         {
@@ -43,7 +45,8 @@ namespace LabBancoDeDados.Services
                 ))
                 .ToListAsync();
         }
-
+        //Liste o nome de todas as Playlists e o número total de Músicas que cada uma contém.
+        //A listagem deve ser ordenada da Playlist mais longa para a mais curta.
         public async Task<List<ContagemMusicasPlaylistDTO>> GetContagemMusicasPorPlaylist()
         {
             var resultados = await _context.Playlists
@@ -65,6 +68,8 @@ namespace LabBancoDeDados.Services
                 .ToList();
         }
 
+        //Identifique e liste todos os Artistas que não possuem nenhuma de suas Músicas adicionadas a nenhuma Playlist no sistema.
+        //(Foco em operadores NOT IN, LEFT JOIN ou EXCEPT)
         public async Task<List<ArtistaSemMusicasDTO>> GetArtistasSemMusicasEmPlaylists()
         {
             return await _context.Artistas
@@ -78,6 +83,8 @@ namespace LabBancoDeDados.Services
                 .ToListAsync();
         }
 
+        //Crie uma função para buscar uma Música por seu id e, em uma única operação de consulta (evitando o problema N+1),
+        //carregue (fetch) automaticamente todos os detalhes do Artista relacionado. (Foco em Eager Loading ou Fetching Join)
         public async Task<MusicaDetalhadaDTO> GetMusicaComArtista(int musicaId)
         {
             return await _context.Musicas
@@ -95,6 +102,10 @@ namespace LabBancoDeDados.Services
                 .FirstOrDefaultAsync();
         }
 
+        //Para cada PLAYLIST no sistema, calcule e retorne o tempo total de reprodução
+        //(soma de duracao_segundos de todas as músicas).
+        //A saída deve listar o nome da Playlist, o username do Dono e o tempo total de reprodução.
+        //(Foco em agregação SUM e GROUP BY sobre o N:N).
         public async Task<List<TempoTotalPlaylistDTO>> GetTempoTotalReproducaoPlaylists()
         {
             var playlists = await _context.Playlists
@@ -120,6 +131,9 @@ namespace LabBancoDeDados.Services
             return resultado.OrderByDescending(r => r.TempoTotalSegundos).ToList();
         }
 
+        //Liste todas as Músicas cujo tempo de duração (duracao_segundos) é menor que o tempo de duração médio de todas as músicas do seu próprio Artista
+        //(ex: listar músicas do AC/DC que são mais curtas que a média do AC/DC).
+        //(Foco em subconsultas ou Window Functions se o ORM suportar)
         public async Task<List<MusicaMaisCurtaQueMediaDTO>> GetMusicasMaisCurtaQueMediaArtista()
         {
             var query = from m in _context.Musicas
@@ -139,6 +153,7 @@ namespace LabBancoDeDados.Services
             return await query.ToListAsync();
         }
 
+        //Liste o título de todas as Músicas na playlist 'Rock do Pablo', incluindo a ordem_na_playlist de cada música.
         public async Task<List<MusicaNaPlaylistDTO>> GetMusicasNaPlaylistComOrdem(string playlistNome)
         {
             return await _context.MusicaPlaylists
@@ -154,6 +169,8 @@ namespace LabBancoDeDados.Services
                 .ToListAsync();
         }
 
+        //Encontre o username do Usuário que é o dono da Playlist que contém a MUSICA 'Bohemian Rhapsody'.
+        //O filtro deve começar pela MUSICA e navegar de volta para o USUARIO.
         public async Task<string> GetUsuarioDonoDaPlaylistComMusica(string musicaTitulo)
         {
             return await _context.MusicaPlaylists
@@ -162,6 +179,8 @@ namespace LabBancoDeDados.Services
                 .FirstOrDefaultAsync();
         }
 
+        //Liste todos os Artistas e seu ranking baseado no número de Playlists em que suas músicas estão presentes
+        //(o Artista com músicas na maior quantidade de playlists fica em 1º)
         public async Task<List<RankArtistaDTO>> GetRankPopularidadeArtistas()
         {
             var artistasComPlaylists = await _context.Artistas
@@ -188,6 +207,8 @@ namespace LabBancoDeDados.Services
                 .ToList();
         }
 
+        //Liste todas as Músicas do Artista 'Led Zeppelin' cuja duração é maior que a duração
+        //da música mais longa do Artista 'Queen'.
         public async Task<List<MusicaComparacaoDTO>> GetMusicasLedZeppelinMaisLongasQueQueen()
         {
             var maiorDuracaoQueen = await _context.Musicas
@@ -207,6 +228,8 @@ namespace LabBancoDeDados.Services
                 .ToListAsync();
         }
 
+        //Implemente uma função que mova uma MUSICA de uma PLAYLIST para outra PLAYLIST
+        //(ambas do mesmo USUARIO), garantindo que o processo seja Atômico (ou tudo acontece ou nada acontece)
         public async Task<bool> TransferirMusicaEntrePlaylists(
             int musicaId, int playlistOrigemId, int playlistDestinoId, 
             int usuarioId, int novaOrdem)
